@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Registration</title>
+</head>
+<body>
+    <h1>Product Registration</h1>
+    
+    <!-- Form for registering a product -->
+    <form id="productForm">
+        <input type="text" id="productID" placeholder="Product ID" required />
+        <input type="text" id="productName" placeholder="Product Name" required />
+        <input type="text" id="manufacturer" placeholder="Manufacturer" required />
+        <input type="date" id="manufacturingDate" required />
+        <input type="number" id="price" placeholder="Price" required />
+        <button type="submit">Register Product</button>
+    </form>
+    
+    <!-- Display the generated QR code -->
+    <div>
+        <h2>Generated QR Code</h2>
+        <img id="qrCodeImage" src="" alt="QR Code" style="width: 200px;" />
+    </div>
+
+    <script>
+        document.getElementById("productForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            
+            const productID = document.getElementById("productID").value;
+            const productName = document.getElementById("productName").value;
+            const manufacturer = document.getElementById("manufacturer").value;
+            const manufacturingDate = document.getElementById("manufacturingDate").value;
+            const price = document.getElementById("price").value;
+            
+            const response = await fetch("http://localhost:3000/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    productID,
+                    productName,
+                    manufacturer,
+                    manufacturingDate,
+                    price
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.qrCode) {
+                // Display the QR code image
+                document.getElementById("qrCodeImage").src = data.qrCode;
+            } else {
+                alert("Failed to generate QR code");
+            }
+        });
+    </script>
+</body>
+</html>
